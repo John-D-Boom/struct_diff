@@ -1,3 +1,8 @@
+# Custom
+*.err
+*.out
+*.swp
+*.pdb
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
