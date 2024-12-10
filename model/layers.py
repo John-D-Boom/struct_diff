@@ -1,8 +1,9 @@
 import torch
+import numpy as np
 import torch.nn as nn
 
 class TransformerLayer(nn.Module):
-    def __init__(self, d_model=1280, num_heads=8, hidden_exp = 1, dropout=0.1):
+    def __init__(self, d_model=1280, num_heads=8, hidden_size = 1, dropout=0.1):
         """
         Transformer layer that maintains input dimensions [B, N, D]
         
@@ -13,7 +14,7 @@ class TransformerLayer(nn.Module):
         """
         super().__init__()
 
-        assert isinstance(hidden_exp, int), "hidden_exp must be of type int"
+        assert isinstance(hidden_size, int), "size must be of type int"
         
         # Multi-Head Self-Attention
         self.self_attn = nn.MultiheadAttention(
@@ -29,10 +30,10 @@ class TransformerLayer(nn.Module):
         
         # Feed-Forward Network
         self.ffn = nn.Sequential(
-            nn.Linear(d_model, d_model * hidden_exp),
+            nn.Linear(d_model, d_model * hidden_size),
             nn.GELU(),
             nn.Dropout(dropout),
-            nn.Linear(d_model * hidden_exp, d_model)
+            nn.Linear(d_model * hidden_size, d_model)
         )
         
         # Dropout
@@ -62,7 +63,7 @@ class TransformerLayer(nn.Module):
         
         return x
 
-def continuous_time_embedding(time, d_model=1280, seq_len = 300):
+def time_encoding(time, seq_len = 300, d_model = 1280):
     """
     Generate a sinusoidal embedding for a continuous time value between 0 and 1.
     
@@ -83,7 +84,7 @@ def continuous_time_embedding(time, d_model=1280, seq_len = 300):
     
     # Generate positional encoding
     position = torch.arange(max_time_increment, dtype=torch.float32).unsqueeze(1)
-    div_term = torch.exp(torch.arange(0, d_model, 2).float() * (-torch.log(7000.0) / d_model))
+    div_term = torch.exp(torch.arange(0, d_model, 2).float() * (-np.log(7000.0) / d_model))
     
     pe = torch.zeros(max_time_increment, d_model)
     pe[:, 0::2] = torch.sin(position * div_term)
@@ -105,7 +106,7 @@ def positional_encoding(max_seq_len, d_model):
     - torch.Tensor: Positional encoding matrix of shape (max_seq_len, d_model)
     """
     position = torch.arange(max_seq_len, dtype=torch.float32).unsqueeze(1)
-    div_term = torch.exp(torch.arange(0, d_model, 2).float() * (-torch.log(10000.0) / d_model))
+    div_term = torch.exp(torch.arange(0, d_model, 2).float() * (- np.log(10000.0) / d_model))
     
     pe = torch.zeros(max_seq_len, d_model)
     pe[:, 0::2] = torch.sin(position * div_term)

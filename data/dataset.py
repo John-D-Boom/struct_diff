@@ -54,4 +54,7 @@ class ContinuousStructTokenDataset(Dataset):
 
         protein = protein_from_dict(protein_dict)
         cont_emb = self.decoder.embed(torch.tensor(protein.get_struct_sequence(), device = self.device))
-        return torch.tensor(cont_emb)
+
+        if cont_emb.shape == torch.Size([1280]):
+            cont_emb = cont_emb.unsqueeze(0)
+        return cont_emb

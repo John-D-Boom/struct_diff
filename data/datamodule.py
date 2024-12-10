@@ -2,7 +2,6 @@ import torch
 import pytorch_lightning as pl
 from torch.utils.data import DataLoader, random_split
 from struct_diff.data.dataset import ContinuousStructTokenDataset
-from struct_diff.data.collators import pad_collate_fn
 from torch.nn.utils.rnn import pad_sequence
 
 
@@ -24,8 +23,8 @@ class ContinuousStructTokenDataModule(pl.LightningDataModule):
                                                     decoder = self.decoder)
         
         self.seed = torch.Generator().manual_seed(0)
-
-    def get_dataloader(self):
+    
+    def train_dataloader(self):
 
         def custom_collate_fn(batch):
             # Pad the sequences
@@ -37,6 +36,5 @@ class ContinuousStructTokenDataModule(pl.LightningDataModule):
                           shuffle=True, 
                           collate_fn = custom_collate_fn, 
                           num_workers = self.num_workers)
-    
 
     
