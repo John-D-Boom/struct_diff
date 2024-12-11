@@ -5,7 +5,6 @@ import os
 import pytorch_lightning as pl
 from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning.callbacks import LearningRateMonitor
-import matplotlib.pyplot as plt
 import torch
 import wandb
 
@@ -20,7 +19,10 @@ num_transformer_heads = 8
 architecture = "transformer"
 batching = "padding"
 
-wandb_logger = WandbLogger(project="struct_diff_v0")
+wandb_dir_path = '/pmglocal/jb5005/wandb_files'
+os.makedirs(wandb_dir_path, exist_ok = True)
+
+wandb_logger = WandbLogger(project="struct_diff_v0", save_dir = wandb_dir_path)
 wandb_logger.experiment.config["batching"] = batching
 wandb_logger.experiment.config["architecture"] = architecture
 wandb_logger.experiment.config["nhead"] = num_transformer_heads
@@ -36,10 +38,10 @@ datamodule = ContinuousStructTokenDataModule(base_path = '/pmglocal/jb5005/struc
 datamodule.setup('train')
 
 #Setup model
-model = TransformerModel()
+model = TransformerModel(lr = 1e-4)
 model = model.to(device)
 
-trainer = pl.Trainer(max_epochs=1500, enable_progress_bar=True, logger = wandb_logger)
+trainer = pl.Trainer(max_epochs=2500, enable_progress_bar=False, logger = wandb_logger)
 
 trainer.fit(model = model, datamodule= datamodule)
 

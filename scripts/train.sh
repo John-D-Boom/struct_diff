@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=gen_esm_tokens
+#SBATCH --job-name=model-v0
 #SBATCH --output=result-%j.out
 #SBATCH --error=result-%j.err
 #SBATCH --time=48:00:00
@@ -30,7 +30,7 @@ fi
 
 mamba install pytorch torchvision pytorch-cuda=12.4 -c pytorch -c nvidia --yes
 pip install esm wandb
-mamba install ipykernel ipywidgets lightning biotite --yes
+mamba install ipykernel ipywidgets lightning biotite matplotlib seaborn --yes
 
 #Data Transfer from Manitou
 
@@ -49,7 +49,7 @@ fi
 
 #Transfer and unpack data
 rsync -a  /manitou/pmg/users/jb5005/struct_diff_data/struct_token_comp.tar.gz /pmglocal/jb5005/struct_diff_data
-tar -xf /pmglocal/jb5005/struct_diff_data/struct_token_comp.tar.gz
+tar -xf /pmglocal/jb5005/struct_diff_data/struct_token_comp.tar.gz -C /pmglocal/jb5005/struct_diff_data/
 
 
 #Run File

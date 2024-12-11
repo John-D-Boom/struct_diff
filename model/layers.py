@@ -63,7 +63,7 @@ class TransformerLayer(nn.Module):
         
         return x
 
-def time_encoding(time, seq_len = 300, d_model = 1280):
+def time_encoding(time, seq_len = 300, d_model = 1280, scale = 1.0):
     """
     Generate a sinusoidal embedding for a continuous time value between 0 and 1.
     
@@ -90,10 +90,10 @@ def time_encoding(time, seq_len = 300, d_model = 1280):
     pe[:, 0::2] = torch.sin(position * div_term)
     pe[:, 1::2] = torch.cos(position * div_term)
 
-    return pe[pos].expand(seq_len, -1)
+    return scale * pe[pos].expand(seq_len, -1)
 
 
-def positional_encoding(max_seq_len, d_model):
+def positional_encoding(max_seq_len, d_model, scale = 1.0):
     """
     Generate sinusoidal positional encoding for a sequence of a given length and dimension.
     Matches the implementation in the "Attention is All You Need" paper from Vaswani et al, 2017.
@@ -112,5 +112,5 @@ def positional_encoding(max_seq_len, d_model):
     pe[:, 0::2] = torch.sin(position * div_term)
     pe[:, 1::2] = torch.cos(position * div_term)
     
-    return pe
+    return scale * pe
 
