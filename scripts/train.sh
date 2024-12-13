@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=model-v0
+#SBATCH --job-name=emb_0_001
 #SBATCH --output=result-%j.out
 #SBATCH --error=result-%j.err
 #SBATCH --time=48:00:00

@@ -36,5 +36,12 @@ class ContinuousStructTokenDataModule(pl.LightningDataModule):
                           shuffle=True, 
                           collate_fn = custom_collate_fn, 
                           num_workers = self.num_workers)
+    
+    def val_dataloader(self):
+
+        """
+        "fake input to appease the pytorch_lightning gods and run validation step
+        """
+        return torch.zeros(1,128,1280)
 
     
