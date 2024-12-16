@@ -10,7 +10,7 @@ import wandb
 
 from struct_diff.data.flow import interpolate
 from struct_diff.data.datamodule import ContinuousStructTokenDataModule
-from struct_diff.model.models import TransformerModel
+from struct_diff.model.models import TransformerModel, ProjectDownTransformerModel
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -22,7 +22,7 @@ batching = "padding"
 wandb_dir_path = '/pmglocal/jb5005/wandb_files'
 os.makedirs(wandb_dir_path, exist_ok = True)
 
-wandb_logger = WandbLogger(name = "emb_0.01", project="struct_diff_v0", save_dir = wandb_dir_path)
+wandb_logger = WandbLogger(name = "scale=0.06", project="struct_diff_v0", save_dir = wandb_dir_path)
 wandb_logger.experiment.config["batching"] = batching
 wandb_logger.experiment.config["architecture"] = architecture
 wandb_logger.experiment.config["nhead"] = num_transformer_heads
@@ -38,10 +38,10 @@ datamodule = ContinuousStructTokenDataModule(base_path = '/pmglocal/jb5005/struc
 datamodule.setup('train')
 
 #Setup model
-model = TransformerModel(lr = 1e-4, hidden_size=2, embedding_scale= 0.01)
+model = TransformerModel(lr = 5e-5, n_blocks=2, hidden_size=4, source_scale=0.06)
 model = model.to(device)
 
-trainer = pl.Trainer(max_epochs=2500, enable_progress_bar=False, logger = wandb_logger)
+trainer = pl.Trainer(max_epochs=1000, enable_progress_bar=False, logger = wandb_logger)
 
 trainer.fit(model = model, datamodule= datamodule)
 

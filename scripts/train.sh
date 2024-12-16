@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=emb_0_001
+#SBATCH --job-name=scale=0_06
 #SBATCH --output=result-%j.out
 #SBATCH --error=result-%j.err
 #SBATCH --time=48:00:00
